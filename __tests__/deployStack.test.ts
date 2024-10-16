@@ -12,9 +12,9 @@ describe('deployStack', () => {
     nock(BASE_API_URL)
       .post('/auth', { username: 'username', password: 'password' })
       .reply(200, { jwt: 'token' })
-    nock(BASE_API_URL).matchHeader('authorization', 'Bearer token').post('/auth/logout').reply(204)
+    nock(BASE_API_URL).matchHeader('x-api-key', 'token').post('/auth/logout').reply(204)
     nock(BASE_API_URL)
-      .matchHeader('authorization', 'Bearer token')
+      .matchHeader('x-api-key', 'token')
       .get('/stacks')
       .reply(200, [
         { Id: 2, Name: 'stack-name', EndpointId: 1 },
@@ -33,7 +33,7 @@ describe('deployStack', () => {
 
   test('deploy swarm stack', async () => {
     nock(BASE_API_URL)
-      .matchHeader('authorization', 'Bearer token')
+      .matchHeader('x-api-key', 'token')
       .matchHeader('content-type', 'application/json')
       .post('/stacks', {
         name: 'new-stack-name',
@@ -50,8 +50,7 @@ describe('deployStack', () => {
 
     await deployStack({
       portainerHost: 'http://mock.url',
-      username: 'username',
-      password: 'password',
+      token: 'token',
       swarmId: 's4ny2nh7qt8lluhvddeu9ulwl',
       endpointId: 1,
       stackName: 'new-stack-name',
@@ -64,7 +63,7 @@ describe('deployStack', () => {
 
   test('deploy compose stack', async () => {
     nock(BASE_API_URL)
-      .matchHeader('authorization', 'Bearer token')
+      .matchHeader('x-api-key', 'token')
       .matchHeader('content-type', 'application/json')
       .post('/stacks', {
         name: 'new-compose-stack-name',
@@ -80,8 +79,7 @@ describe('deployStack', () => {
 
     await deployStack({
       portainerHost: 'http://mock.url',
-      username: 'username',
-      password: 'password',
+      token: 'token',
       endpointId: 1,
       stackName: 'new-compose-stack-name',
       stackDefinitionFile: 'example-stack-definition.yml',
@@ -93,7 +91,7 @@ describe('deployStack', () => {
 
   test('deploy existing stack', async () => {
     nock(BASE_API_URL)
-      .matchHeader('authorization', 'Bearer token')
+      .matchHeader('x-api-key', 'token')
       .matchHeader('content-type', 'application/json')
       .put('/stacks/2', {
         stackFileContent:
@@ -106,8 +104,7 @@ describe('deployStack', () => {
 
     await deployStack({
       portainerHost: 'http://mock.url',
-      username: 'username',
-      password: 'password',
+      token: 'token',
       endpointId: 1,
       stackName: 'stack-name',
       stackDefinitionFile: 'example-stack-definition.yml',
@@ -119,7 +116,7 @@ describe('deployStack', () => {
 
   test('deploy existing stack with env', async () => {
     nock(BASE_API_URL)
-      .matchHeader('authorization', 'Bearer token')
+      .matchHeader('x-api-key', 'token')
       .matchHeader('content-type', 'application/json')
       .put('/stacks/3', {
         env: [{ name: 'keyName', value: 'value1' }],
@@ -133,8 +130,7 @@ describe('deployStack', () => {
 
     await deployStack({
       portainerHost: 'http://mock.url',
-      username: 'username',
-      password: 'password',
+      token: 'token',
       endpointId: 1,
       stackName: 'stack-name-with-env',
       stackDefinitionFile: 'example-stack-definition.yml',
@@ -146,7 +142,7 @@ describe('deployStack', () => {
 
   test('deploy with explicit endpoint id', async () => {
     nock(BASE_API_URL)
-      .matchHeader('authorization', 'Bearer token')
+      .matchHeader('x-api-key', 'token')
       .matchHeader('content-type', 'application/json')
       .post('/stacks', {
         name: 'new-stack-name',
@@ -162,8 +158,7 @@ describe('deployStack', () => {
 
     await deployStack({
       portainerHost: 'http://mock.url',
-      username: 'username',
-      password: 'password',
+      token: 'token',
       endpointId: 2,
       stackName: 'new-stack-name',
       stackDefinitionFile: 'example-stack-definition.yml',
@@ -175,7 +170,7 @@ describe('deployStack', () => {
 
   test('deploy without specific image', async () => {
     nock(BASE_API_URL)
-      .matchHeader('authorization', 'Bearer token')
+      .matchHeader('x-api-key', 'token')
       .matchHeader('content-type', 'application/json')
       .post('/stacks', {
         name: 'new-stack-name',
@@ -191,8 +186,7 @@ describe('deployStack', () => {
 
     await deployStack({
       portainerHost: 'http://mock.url',
-      username: 'username',
-      password: 'password',
+      token: 'token',
       endpointId: 1,
       stackName: 'new-stack-name',
       stackDefinitionFile: 'example-stack-definition.yml'
@@ -203,7 +197,7 @@ describe('deployStack', () => {
 
   test('deploy with template variables', async () => {
     nock(BASE_API_URL)
-      .matchHeader('authorization', 'Bearer token')
+      .matchHeader('x-api-key', 'token')
       .matchHeader('content-type', 'application/json')
       .post('/stacks', {
         name: 'new-stack-name',
@@ -219,8 +213,7 @@ describe('deployStack', () => {
 
     await deployStack({
       portainerHost: 'http://mock.url',
-      username: 'username',
-      password: 'password',
+      token: 'token',
       endpointId: 1,
       stackName: 'new-stack-name',
       stackDefinitionFile: 'example-stack-definition-with-template-variables.yml',

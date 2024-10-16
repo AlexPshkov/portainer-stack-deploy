@@ -75,8 +75,7 @@ jobs:
         uses: carlrygart/portainer-stack-deploy@v1
         with:
           portainer-host: ${{ secrets.PORTAINER_HOST }}
-          username: ${{ secrets.PORTAINER_USERNAME }}
-          password: ${{ secrets.PORTAINER_PASSWORD }}
+          token: ${{ secrets.PORTAINER_API_KEY }}
           stack-name: 'my-awesome-web-app'
           stack-definition: 'stack-definition.yml'
           template-variables: '{"username": "MrCool"}'
