@@ -38,7 +38,7 @@ export class PortainerApi {
   }
 
   async createStack(params: CreateStackParams, body: CreateStackBody): Promise<void> {
-    await this.axiosInstance.post('/stacks', body, { params })
+    await this.axiosInstance.post('/stacks/create/standalone/file', body, { params })
   }
 
   async updateStack(id: number, params: UpdateStackParams, body: UpdateStackBody): Promise<void> {
