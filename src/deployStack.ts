@@ -70,6 +70,8 @@ export async function deployStack({
     token
   })
 
+  core.info(`Using host: ${portainerHost}`)
+
   try {
     const allStacks = await portainerApi.getStacks()
     const existingStack = allStacks.find(s => s.Name === stackName)
@@ -94,7 +96,7 @@ export async function deployStack({
         {
           type: swarmId ? StackType.SWARM : StackType.COMPOSE,
           method: 'string',
-          endpointId
+          endpointId: endpointId
         },
         {
           name: stackName,

@@ -26,7 +26,7 @@ class PortainerApi {
         return data;
     }
     async createStack(params, body) {
-        await this.axiosInstance.post('/stacks', body, { params });
+        await this.axiosInstance.post('/stacks/create/standalone/file', body, { params });
     }
     async updateStack(id, params, body) {
         await this.axiosInstance.put(`/stacks/${id}`, body, { params });
@@ -106,6 +106,7 @@ async function deployStack({ portainerHost, token, swarmId, endpointId, stackNam
     await portainerApi.useToken({
         token
     });
+    core.info(`Using host: ${portainerHost}`);
     try {
         const allStacks = await portainerApi.getStacks();
         const existingStack = allStacks.find(s => s.Name === stackName);
@@ -125,7 +126,7 @@ async function deployStack({ portainerHost, token, swarmId, endpointId, stackNam
             await portainerApi.createStack({
                 type: swarmId ? StackType.SWARM : StackType.COMPOSE,
                 method: 'string',
-                endpointId
+                endpointId: endpointId
             }, {
                 name: stackName,
                 stackFileContent: stackDefinitionToDeploy,
