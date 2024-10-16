@@ -17,8 +17,17 @@ class PortainerApi {
         this.axiosInstance = axios_1.default.create({
             baseURL: `${host}/api`
         });
+        // this.axiosInstance.interceptors.request.use(request => {
+        //   console.log('Starting Request', JSON.stringify(request.data, null, 2))
+        //   return request
+        // })
+        //
+        // this.axiosInstance.interceptors.response.use(response => {
+        //   console.log('Response:', JSON.stringify(response.data, null, 2))
+        //   return response
+        // })
     }
-    async useToken({ token }) {
+    async useToken(token) {
         this.axiosInstance.defaults.headers.common['X-API-Key'] = token;
     }
     async getStacks() {
@@ -26,10 +35,10 @@ class PortainerApi {
         return data;
     }
     async createStack(params, body) {
-        await this.axiosInstance.post('/stacks', body, { params });
+        await this.axiosInstance.post('/stacks', body, { params: params });
     }
     async updateStack(id, params, body) {
-        await this.axiosInstance.put(`/stacks/${id}`, body, { params });
+        await this.axiosInstance.put(`/stacks/${id}`, body, { params: params });
     }
 }
 exports.PortainerApi = PortainerApi;
@@ -103,9 +112,8 @@ async function deployStack({ portainerHost, token, swarmId, endpointId, stackNam
     const portainerApi = new api_1.PortainerApi(portainerHost);
     const stackDefinitionToDeploy = generateNewStackDefinition(stackDefinitionFile, templateVariables, image);
     core.debug(stackDefinitionToDeploy);
-    await portainerApi.useToken({
-        token
-    });
+    await portainerApi.useToken(token);
+    core.info(`Using host: ${portainerHost}`);
     try {
         const allStacks = await portainerApi.getStacks();
         const existingStack = allStacks.find(s => s.Name === stackName);
@@ -125,7 +133,7 @@ async function deployStack({ portainerHost, token, swarmId, endpointId, stackNam
             await portainerApi.createStack({
                 type: swarmId ? StackType.SWARM : StackType.COMPOSE,
                 method: 'string',
-                endpointId
+                endpointId: endpointId
             }, {
                 name: stackName,
                 stackFileContent: stackDefinitionToDeploy,
@@ -136,7 +144,6 @@ async function deployStack({ portainerHost, token, swarmId, endpointId, stackNam
     }
     catch (error) {
         core.info('⛔️ Something went wrong during deployment!');
-        core.debug(error.message);
         throw error;
     }
     finally {

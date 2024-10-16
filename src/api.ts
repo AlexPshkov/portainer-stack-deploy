@@ -28,7 +28,7 @@ export class PortainerApi {
     })
   }
 
-  async useToken({ token }: { token: string }): Promise<void> {
+  async useToken(token: string): Promise<void> {
     this.axiosInstance.defaults.headers.common['X-API-Key'] = token
   }
 
@@ -38,10 +38,10 @@ export class PortainerApi {
   }
 
   async createStack(params: CreateStackParams, body: CreateStackBody): Promise<void> {
-    await this.axiosInstance.post('/stacks', body, { params })
+    await this.axiosInstance.post('/stacks', body, { params: params })
   }
 
   async updateStack(id: number, params: UpdateStackParams, body: UpdateStackBody): Promise<void> {
-    await this.axiosInstance.put(`/stacks/${id}`, body, { params })
+    await this.axiosInstance.put(`/stacks/${id}`, body, { params: params })
   }
 }

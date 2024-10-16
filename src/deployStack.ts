@@ -66,9 +66,9 @@ export async function deployStack({
   )
   core.debug(stackDefinitionToDeploy)
 
-  await portainerApi.useToken({
-    token
-  })
+  await portainerApi.useToken(token)
+
+  core.info(`Using host: ${portainerHost}`)
 
   try {
     const allStacks = await portainerApi.getStacks()
@@ -94,7 +94,7 @@ export async function deployStack({
         {
           type: swarmId ? StackType.SWARM : StackType.COMPOSE,
           method: 'string',
-          endpointId
+          endpointId: endpointId
         },
         {
           name: stackName,
@@ -106,7 +106,6 @@ export async function deployStack({
     }
   } catch (error) {
     core.info('⛔️ Something went wrong during deployment!')
-    core.debug((error as Error).message)
     throw error
   } finally {
     core.info(`Logging out from Portainer instance...`)
